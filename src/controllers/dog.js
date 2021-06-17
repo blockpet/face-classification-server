@@ -6,6 +6,7 @@ import { loadModel } from "../lib/ml";
 import { getRankArray } from "../lib/array";
 
 const makePrediction = async (req, res, next) => {
+  console.log("makePrediction");
   const filePath = await downloadFromUrl(req.query.url);
 
   //모델 가져옴
