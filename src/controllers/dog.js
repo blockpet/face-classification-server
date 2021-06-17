@@ -28,7 +28,7 @@ const makePrediction = async (req, res, next) => {
 
   //예측이 끝났으니 해당 이미지 삭제
   fs.unlinkSync(filePath);
-  return res.json({ seq: rankArr });
+  return res.json({ result: rankArr });
 };
 
 export { makePrediction };
