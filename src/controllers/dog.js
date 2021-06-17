@@ -11,7 +11,7 @@ const makePrediction = async (req, res, next) => {
 
   //모델 가져옴
   const model = await loadModel(
-    "file://C:/Users/HERO/Desktop/kim/face-classification-server/tipa_resnet_js.h5/model.json"
+    process.env.ROOT_PATH + "tipa_resnet_js.h5/model.json"
   );
 
   //이미지 전처리 (이미지를 텐서로 변환)
