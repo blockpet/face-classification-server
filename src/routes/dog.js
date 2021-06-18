@@ -1,8 +1,9 @@
 import express from "express";
-import { makePrediction } from "../controllers/dog";
+import { search, identify } from "../controllers/dog";
 
 const router = express.Router();
 
-router.route("/search").post(makePrediction);
+router.route("/search").post(search);
+router.route("/identify").post(identify);
 
 export default router;

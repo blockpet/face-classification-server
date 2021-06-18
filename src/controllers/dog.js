@@ -1,34 +1,24 @@
-import fs from "fs";
-import path from "path";
+import { downloadFromUrl } from "../lib/image";
+import { dogClassify } from "../lib/ml";
 
-import { downloadFromUrl, getTensorImage } from "../lib/image";
-import { loadModel } from "../lib/ml";
-import { getRankArray } from "../lib/array";
-
-const makePrediction = async (req, res, next) => {
-  console.log("makePrediction");
+const search = async (req, res, next) => {
   const filePath = await downloadFromUrl(req.query.url);
 
-  //모델 가져옴
-  const model = await loadModel(
-    process.env.ROOT_PATH + "tipa_resnet_js.h5/model.json"
-  );
+  const result = await dogClassify(filePath, 5);
 
-  //이미지 전처리 (이미지를 텐서로 변환)
-  let tfImage = getTensorImage(filePath);
-  tfImage = tfImage.reverse(-1).reshape([1, 224, 224, 3]).div(255);
-
-  //예측하기 - 텐서를 리턴
-  const result = model.predict(tfImage);
-
-  //텐서를 어레이로 변환
-  const resultArr = await result.arraySync();
-  const rankArr = getRankArray(resultArr[0], 5);
-  console.log(rankArr);
-
-  //예측이 끝났으니 해당 이미지 삭제
-  fs.unlinkSync(filePath);
-  return res.json({ result: rankArr });
+  return res.json({ result });
 };
 
-export { makePrediction };
+const identify = async (req, res, next) => {
+  const filePath = await downloadFromUrl(req.query.url);
+
+  const rankArray = await dogClassify(filePath, 1);
+
+  const result = rankArray[0].mlKey == req.query.mlKey;
+
+  console.log(result);
+
+  return res.json({ result });
+};
+
+export { search, identify };
